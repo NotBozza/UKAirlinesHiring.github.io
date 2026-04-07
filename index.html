@@ -360,11 +360,136 @@
       letter-spacing: 0.05em;
     }
 
+    /* ── SUBMIT SECTION ── */
+    .submit-section {
+      position: relative; z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto 0;
+      padding: 0 48px 64px;
+    }
+    .submit-inner {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px 44px;
+      background: rgba(255,255,255,0.018);
+    }
+    .submit-header { margin-bottom: 32px; }
+    .submit-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .submit-icon {
+      color: var(--green);
+      font-size: 0.9rem;
+    }
+    .submit-title {
+      font-family: var(--display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .submit-sub {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+      max-width: 560px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    .form-group--full { grid-column: 1 / -1; }
+    .form-group--submit {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+    .form-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .req { color: var(--green); }
+    .optional { color: var(--muted); font-size: 0.55rem; }
+    .form-input {
+      font-family: var(--sans);
+      font-size: 0.84rem;
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.18s, background 0.18s;
+      width: 100%;
+    }
+    .form-input::placeholder { color: var(--muted); }
+    .form-input:focus {
+      border-color: rgba(34,212,122,0.45);
+      background: rgba(34,212,122,0.04);
+    }
+    .form-select {
+      appearance: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23627080' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+    .form-select option { background: #111820; color: var(--text); }
+    .form-textarea {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.55;
+    }
+    .submit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 12px 26px;
+      border-radius: 6px;
+      background: var(--green);
+      color: #060e10;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.18s, transform 0.18s;
+      white-space: nowrap;
+    }
+    .submit-btn svg { width: 14px; height: 14px; }
+    .submit-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+    .form-success, .form-error {
+      margin-top: 16px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      padding: 12px 16px;
+      border-radius: 6px;
+    }
+    .form-success { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,212,122,.25); }
+    .form-error   { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(255,85,85,.2); }
+
     @media (max-width: 800px) {
-      header, .filter-bar, main, .legend, footer { padding-left: 20px; padding-right: 20px; }
+      header, .filter-bar, main, .legend, .submit-section, footer { padding-left: 20px; padding-right: 20px; }
       h1 { font-size: 2.8rem; }
       thead th:nth-child(2), td:nth-child(2) { display: none; }
       .td-notes { max-width: 180px; font-size: 0.74rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group--submit { justify-content: flex-start; }
+      .submit-inner { padding: 28px 24px; }
     }
   </style>
 </head>
@@ -543,6 +668,13 @@
     <thead><tr><th>Airline</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
     <tbody>
 
+      <tr data-status="watch">
+        <td><div class="td-name">Emerald Airlines</div><div class="td-iata">EG · EUK</div></td>
+        <td><span class="type-badge t-regional">Regional</span></td>
+        <td><span class="status-pill s-watch">CV Sent</span></td>
+        <td class="td-notes">Not hiring fATPL holders right now — <span class="bl">email sent.</span> Word is they're <span class="hi">desperate for FOs</span>, so worth watching closely.</td>
+      </tr>
+
       <tr data-status="closed">
         <td><div class="td-name">Aurigny</div><div class="td-iata">GR · AUR</div></td>
         <td><span class="type-badge t-regional">Regional</span></td>
@@ -690,6 +822,65 @@
 
 </main>
 
+<!-- SUBMIT SECTION -->
+<div class="submit-section">
+  <div class="submit-inner">
+    <div class="submit-header">
+      <div class="submit-title-row">
+        <span class="submit-icon">✦</span>
+        <h2 class="submit-title">Submit Intel</h2>
+      </div>
+      <p class="submit-sub">Know something we don't? Submit an airline and its current hiring status — it'll be sent for review and added to the tracker.</p>
+    </div>
+
+    <form id="intel-form" action="https://formspree.io/f/xpwzgokd" method="POST">
+      <input type="hidden" name="_subject" value="UK Pilot Tracker — New Intel Submission" />
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="f-airline">Airline Name <span class="req">*</span></label>
+          <input class="form-input" type="text" id="f-airline" name="airline" placeholder="e.g. Loganair" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="f-status">Hiring Status <span class="req">*</span></label>
+          <select class="form-input form-select" id="f-status" name="status" required>
+            <option value="" disabled selected>Select status…</option>
+            <option value="Open — Direct Application">✦ Open — Direct Application</option>
+            <option value="Pathway / Scheme Required">⟶ Pathway / Scheme Required</option>
+            <option value="Watch — Hiring Soon">◎ Watch — Hiring Soon</option>
+            <option value="Not Currently Hiring">✕ Not Currently Hiring</option>
+          </select>
+        </div>
+
+        <div class="form-group form-group--full">
+          <label class="form-label" for="f-notes">Details / Notes <span class="req">*</span></label>
+          <textarea class="form-input form-textarea" id="f-notes" name="notes" placeholder="e.g. Open for UK CAA holders, minimum 250h, apply via their careers page…" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="f-source">Your Name / Source <span class="optional">(optional)</span></label>
+          <input class="form-input" type="text" id="f-source" name="source" placeholder="e.g. PPRuNe, direct email, anonymous…" />
+        </div>
+
+        <div class="form-group form-group--submit">
+          <button class="submit-btn" type="submit" id="submit-btn">
+            <span class="btn-text">Send Intel</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="form-success" class="form-success" style="display:none;">
+        ✓ &nbsp;Received — thanks for the intel. It'll be reviewed and added to the tracker.
+      </div>
+      <div id="form-error" class="form-error" style="display:none;">
+        ⚠ &nbsp;Something went wrong. Please try again.
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- LEGEND -->
 <div class="legend">
   <span class="leg-item"><span class="leg-dot" style="background:var(--green)"></span>Open / Active Hiring</span>
@@ -738,6 +929,38 @@
         row.classList.toggle('hidden', !show);
       });
     });
+  });
+  // Form submission via Formspree
+  const form = document.getElementById('intel-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const successMsg = document.getElementById('form-success');
+  const errorMsg = document.getElementById('form-error');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.querySelector('.btn-text').textContent = 'Sending…';
+    successMsg.style.display = 'none';
+    errorMsg.style.display = 'none';
+
+    try {
+      const res = await fetch('https://formspree.io/f/xbdpwwkb', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      });
+      if (res.ok) {
+        successMsg.style.display = 'block';
+        form.reset();
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    } catch {
+      errorMsg.style.display = 'block';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.querySelector('.btn-text').textContent = 'Send Intel';
+    }
   });
 </script>
 </body>
