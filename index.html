@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <link rel="icon" type="image/png" href="/Favicon.png">
-  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>UK Pilot Jobs — Hiring Tracker 2026</title>
@@ -42,7 +40,6 @@
       overflow-x: hidden;
     }
 
-    /* grid texture */
     body::before {
       content: '';
       position: fixed;
@@ -54,6 +51,38 @@
       pointer-events: none;
       z-index: 0;
     }
+
+    /* ── FLOATING SUBMIT BUTTON ── */
+    .fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 13px 22px;
+      border-radius: 100px;
+      background: var(--green);
+      color: #060e10;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 24px rgba(34,212,122,0.35);
+      transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+      text-decoration: none;
+    }
+    .fab:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 32px rgba(34,212,122,0.45);
+    }
+    .fab:active { transform: translateY(0); }
+    .fab svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .fab-label-short { display: none; }
 
     /* ── HEADER ── */
     header {
@@ -150,17 +179,81 @@
       margin-top: 4px;
     }
 
-    /* ── FILTER BAR ── */
-    .filter-bar {
+    /* ── SEARCH + FILTER BAR ── */
+    .search-filter-bar {
       position: relative; z-index: 10;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 20px 48px;
+      padding: 16px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      max-width: 420px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .search-input {
+      font-family: var(--sans);
+      font-size: 0.84rem;
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 9px 14px 9px 36px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.18s, background 0.18s;
+    }
+    .search-input::placeholder { color: var(--muted); }
+    .search-input:focus {
+      border-color: rgba(34,212,122,0.45);
+      background: rgba(34,212,122,0.04);
+    }
+    .search-clear {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 2px 4px;
+      display: none;
+    }
+    .search-clear:hover { color: var(--text); }
+    .search-count {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+    .search-count span { color: var(--green); }
+
+    .filter-row {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
-      border-bottom: 1px solid var(--border);
     }
     .filter-label {
       font-family: var(--mono);
@@ -219,12 +312,11 @@
       height: 1px;
       background: var(--border);
     }
+    .table-section { display: block; }
+    .table-section.section-hidden { display: none; }
 
     /* ── TABLE ── */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    table { width: 100%; border-collapse: collapse; }
     thead tr { border-bottom: 1px solid var(--border); }
     thead th {
       font-family: var(--mono);
@@ -246,10 +338,7 @@
     tbody tr:hover { background: rgba(255,255,255,.022); }
     tbody tr.hidden { display: none; }
 
-    td {
-      padding: 16px;
-      vertical-align: middle;
-    }
+    td { padding: 16px; vertical-align: middle; }
     td:first-child { padding-left: 0; }
     td:last-child  { padding-right: 0; }
 
@@ -323,6 +412,18 @@
     .td-notes .bl  { color: var(--blue); }
     .td-notes .rd  { color: var(--red); opacity:.85; }
 
+    /* no results */
+    .no-results {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    .no-results.show { display: block; }
+
     /* ── LEGEND ── */
     .legend {
       position: relative; z-index: 10;
@@ -344,31 +445,13 @@
     }
     .leg-dot { width: 7px; height: 7px; border-radius: 50%; }
 
-    /* ── FOOTER ── */
-    footer {
-      position: relative; z-index: 10;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px 48px 36px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    footer p {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-
     /* ── SUBMIT SECTION ── */
     .submit-section {
       position: relative; z-index: 10;
       max-width: 1200px;
       margin: 0 auto 0;
       padding: 0 48px 64px;
+      scroll-margin-top: 20px;
     }
     .submit-inner {
       border: 1px solid var(--border);
@@ -383,10 +466,7 @@
       gap: 12px;
       margin-bottom: 10px;
     }
-    .submit-icon {
-      color: var(--green);
-      font-size: 0.9rem;
-    }
+    .submit-icon { color: var(--green); font-size: 0.9rem; }
     .submit-title {
       font-family: var(--display);
       font-size: 1.6rem;
@@ -447,11 +527,7 @@
       padding-right: 36px;
     }
     .form-select option { background: #111820; color: var(--text); }
-    .form-textarea {
-      resize: vertical;
-      min-height: 90px;
-      line-height: 1.55;
-    }
+    .form-textarea { resize: vertical; min-height: 90px; line-height: 1.55; }
     .submit-btn {
       display: inline-flex;
       align-items: center;
@@ -485,18 +561,74 @@
     .form-success { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,212,122,.25); }
     .form-error   { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(255,85,85,.2); }
 
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 48px 100px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    footer p {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── MOBILE ── */
     @media (max-width: 800px) {
-      header, .filter-bar, main, .legend, .submit-section, footer { padding-left: 20px; padding-right: 20px; }
-      h1 { font-size: 2.8rem; }
-      thead th:nth-child(2), td:nth-child(2) { display: none; }
+      header, .search-filter-bar, main, .legend, .submit-section, footer {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      header { padding-top: 36px; padding-bottom: 32px; }
+      h1 { font-size: 2.6rem; margin-bottom: 24px; }
+      .stats-row { gap: 16px 0; }
+      .stat { padding: 0 16px 0 0; margin-right: 16px; }
+      .stat-num { font-size: 1.6rem; }
+
+      /* Collapse type column on mobile */
+      .col-type { display: none; }
+
       .td-notes { max-width: 180px; font-size: 0.74rem; }
       .form-grid { grid-template-columns: 1fr; }
       .form-group--submit { justify-content: flex-start; }
-      .submit-inner { padding: 28px 24px; }
+      .submit-inner { padding: 24px 20px; }
+      .submit-title { font-size: 1.25rem; }
+
+      .fab { bottom: 20px; right: 16px; padding: 11px 18px; }
+      .fab-label-long { display: none; }
+      .fab-label-short { display: inline; }
+
+      td { padding: 12px 10px; }
+      td:first-child { padding-left: 0; }
+
+      .sec-head { padding: 28px 0 14px; }
+      .search-wrap { max-width: 100%; }
+      .search-row { flex-wrap: wrap; }
+      .search-count { width: 100%; margin-top: 4px; }
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 2rem; }
+      .td-name { font-size: 0.85rem; }
+      .status-pill { font-size: 0.6rem; padding: 4px 9px; }
     }
   </style>
 </head>
 <body>
+
+<!-- FLOATING SUBMIT BUTTON -->
+<a href="#submit" class="fab">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  <span class="fab-label-long">Submit Intel</span>
+  <span class="fab-label-short">Intel</span>
+</a>
 
 <header>
   <div class="header-top">
@@ -524,309 +656,330 @@
   </div>
 </header>
 
-<div class="filter-bar">
-  <span class="filter-label">Filter //</span>
-  <button class="f-btn fa" data-f="all">All</button>
-  <button class="f-btn"    data-f="open">✦ Open Now</button>
-  <button class="f-btn"    data-f="pathway">⟶ Pathway</button>
-  <button class="f-btn"    data-f="watch">◎ Watch Soon</button>
-  <button class="f-btn"    data-f="closed">✕ Not Hiring</button>
+<!-- SEARCH + FILTER BAR -->
+<div class="search-filter-bar">
+  <div class="search-row">
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input class="search-input" type="text" id="search-input" placeholder="Search airlines, types, notes…" autocomplete="off" />
+      <button class="search-clear" id="search-clear" title="Clear search">×</button>
+    </div>
+    <span class="search-count" id="search-count"></span>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Filter //</span>
+    <button class="f-btn fa" data-f="all">All</button>
+    <button class="f-btn"    data-f="open">✦ Open Now</button>
+    <button class="f-btn"    data-f="pathway">⟶ Pathway</button>
+    <button class="f-btn"    data-f="watch">◎ Watch Soon</button>
+    <button class="f-btn"    data-f="closed">✕ Not Hiring</button>
+  </div>
 </div>
 
 <main>
 
   <!-- MAJOR PASSENGER -->
-  <div class="sec-head"><h2>Major Passenger Carriers</h2></div>
-  <table>
-    <thead><tr><th>Airline</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
-    <tbody>
+  <div class="table-section" id="section-major">
+    <div class="sec-head"><h2>Major Passenger Carriers</h2></div>
+    <table>
+      <thead><tr><th>Airline</th><th class="col-type">Type</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
 
-      <tr data-status="pathway">
-        <td><div class="td-name">Ascend Airways</div><div class="td-iata">YD · SYNERGY</div></td>
-        <td><span class="type-badge t-charter">Charter</span></td>
-        <td><span class="status-pill s-pathway">Recommendation</span></td>
-        <td class="td-notes">Hiring through <span class="hi">recommendation only</span>. No direct open applications.</td>
-      </tr>
+        <tr data-status="pathway">
+          <td><div class="td-name">Ascend Airways</div><div class="td-iata">YD · SYNERGY</div></td>
+          <td class="col-type"><span class="type-badge t-charter">Charter</span></td>
+          <td><span class="status-pill s-pathway">Recommendation</span></td>
+          <td class="td-notes">Hiring through <span class="hi">recommendation only</span>. No direct open applications.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">British Airways</div><div class="td-iata">BA · BAW</div></td>
-        <td><span class="type-badge t-airline">Full Service</span></td>
-        <td><span class="status-pill s-closed">SSP Not Open</span></td>
-        <td class="td-notes"><span class="rd">BA SSP currently not open.</span> Monitor careers page for re-launch.</td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">British Airways</div><div class="td-iata">BA · BAW</div></td>
+          <td class="col-type"><span class="type-badge t-airline">Full Service</span></td>
+          <td><span class="status-pill s-closed">SSP Not Open</span></td>
+          <td class="td-notes"><span class="rd">BA SSP currently not open.</span> Monitor careers page for re-launch.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">BA CityFlyer</div><div class="td-iata">CJ · CFE</div></td>
-        <td><span class="type-badge t-regional">Regional</span></td>
-        <td><span class="status-pill s-closed">Closed</span></td>
-        <td class="td-notes">Was open a few months ago — <span class="hi">currently closed</span>. Worth monitoring.</td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">BA CityFlyer</div><div class="td-iata">CJ · CFE</div></td>
+          <td class="col-type"><span class="type-badge t-regional">Regional</span></td>
+          <td><span class="status-pill s-closed">Closed</span></td>
+          <td class="td-notes">Was open a few months ago — <span class="hi">currently closed</span>. Worth monitoring.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">BA EuroFlyer</div><div class="td-iata">A0 · EFW</div></td>
-        <td><span class="type-badge t-airline">Full Service</span></td>
-        <td><span class="status-pill s-closed">SSP Not Open</span></td>
-        <td class="td-notes"><span class="rd">BA SSP not open</span> — same pipeline as mainline British Airways.</td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">BA EuroFlyer</div><div class="td-iata">A0 · EFW</div></td>
+          <td class="col-type"><span class="type-badge t-airline">Full Service</span></td>
+          <td><span class="status-pill s-closed">SSP Not Open</span></td>
+          <td class="td-notes"><span class="rd">BA SSP not open</span> — same pipeline as mainline British Airways.</td>
+        </tr>
 
-      <tr data-status="watch">
-        <td><div class="td-name">easyJet</div><div class="td-iata">U2 · EZY</div></td>
-        <td><span class="type-badge t-airline">Low Cost</span></td>
-        <td><span class="status-pill s-watch">Watch — June</span></td>
-        <td class="td-notes"><span class="bl">Rumoured to move to integrated ATO pathways in June 2026.</span> Monitor closely.</td>
-      </tr>
+        <tr data-status="watch">
+          <td><div class="td-name">easyJet</div><div class="td-iata">U2 · EZY</div></td>
+          <td class="col-type"><span class="type-badge t-airline">Low Cost</span></td>
+          <td><span class="status-pill s-watch">Watch — June</span></td>
+          <td class="td-notes"><span class="bl">Rumoured to move to integrated ATO pathways in June 2026.</span> Monitor closely.</td>
+        </tr>
 
-      <tr data-status="open">
-        <td><div class="td-name">Jet2.com</div><div class="td-iata">LS · EXS</div></td>
-        <td><span class="type-badge t-airline">Low Cost</span></td>
-        <td><span class="status-pill s-open">SFO Open</span></td>
-        <td class="td-notes"><span class="gr">SFO open right now.</span> <span class="hi">Highly competitive</span> — strong application essential.</td>
-      </tr>
+        <tr data-status="open">
+          <td><div class="td-name">Jet2.com</div><div class="td-iata">LS · EXS</div></td>
+          <td class="col-type"><span class="type-badge t-airline">Low Cost</span></td>
+          <td><span class="status-pill s-open">SFO Open</span></td>
+          <td class="td-notes"><span class="gr">SFO open right now.</span> <span class="hi">Highly competitive</span> — strong application essential.</td>
+        </tr>
 
-      <tr data-status="pathway">
-        <td><div class="td-name">Loganair</div><div class="td-iata">LM · LOG</div></td>
-        <td><span class="type-badge t-regional">Regional</span></td>
-        <td><span class="status-pill s-pathway">Pathway</span></td>
-        <td class="td-notes">Hiring through <span class="hi">Skyborne tagging</span> and <span class="hi">APS MCC Course</span>.</td>
-      </tr>
+        <tr data-status="pathway">
+          <td><div class="td-name">Loganair</div><div class="td-iata">LM · LOG</div></td>
+          <td class="col-type"><span class="type-badge t-regional">Regional</span></td>
+          <td><span class="status-pill s-pathway">Pathway</span></td>
+          <td class="td-notes">Hiring through <span class="hi">Skyborne tagging</span> and <span class="hi">APS MCC Course</span>.</td>
+        </tr>
 
-      <tr data-status="pathway">
-        <td><div class="td-name">Norse Atlantic UK</div><div class="td-iata">Z0 · UBT</div></td>
-        <td><span class="type-badge t-airline">Long Haul LCC</span></td>
-        <td><span class="status-pill s-pathway">LE Pathway</span></td>
-        <td class="td-notes"><span class="hi">Aurigny LE Pathway</span> — indirect route via Aurigny low-hours scheme.</td>
-      </tr>
+        <tr data-status="pathway">
+          <td><div class="td-name">Norse Atlantic UK</div><div class="td-iata">Z0 · UBT</div></td>
+          <td class="col-type"><span class="type-badge t-airline">Long Haul LCC</span></td>
+          <td><span class="status-pill s-pathway">LE Pathway</span></td>
+          <td class="td-notes"><span class="hi">Aurigny LE Pathway</span> — indirect route via Aurigny low-hours scheme.</td>
+        </tr>
 
-      <tr data-status="open">
-        <td><div class="td-name">Ryanair UK</div><div class="td-iata">RK · RUK</div></td>
-        <td><span class="type-badge t-airline">Low Cost</span></td>
-        <td><span class="status-pill s-open">Open Now</span></td>
-        <td class="td-notes"><span class="gr">Open right now</span> for <span class="hi">UK CAA licence holders</span>. Direct application available.</td>
-      </tr>
+        <tr data-status="open">
+          <td><div class="td-name">Ryanair UK</div><div class="td-iata">RK · RUK</div></td>
+          <td class="col-type"><span class="type-badge t-airline">Low Cost</span></td>
+          <td><span class="status-pill s-open">Open Now</span></td>
+          <td class="td-notes"><span class="gr">Open right now</span> for <span class="hi">UK CAA licence holders</span>. Direct application available.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">Virgin Atlantic</div><div class="td-iata">VS · VIR</div></td>
-        <td><span class="type-badge t-airline">Full Service</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not hiring pilots</span> at this time.</td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">Virgin Atlantic</div><div class="td-iata">VS · VIR</div></td>
+          <td class="col-type"><span class="type-badge t-airline">Full Service</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not hiring pilots</span> at this time.</td>
+        </tr>
 
-      <tr data-status="open">
-        <td><div class="td-name">Wizz Air UK</div><div class="td-iata">W9 · WUK</div></td>
-        <td><span class="type-badge t-airline">Low Cost</span></td>
-        <td><span class="status-pill s-open">Hiring</span></td>
-        <td class="td-notes"><span class="gr">Currently hiring.</span> Check Wizz Air careers portal for live vacancies.</td>
-      </tr>
+        <tr data-status="open">
+          <td><div class="td-name">Wizz Air UK</div><div class="td-iata">W9 · WUK</div></td>
+          <td class="col-type"><span class="type-badge t-airline">Low Cost</span></td>
+          <td><span class="status-pill s-open">Hiring</span></td>
+          <td class="td-notes"><span class="gr">Currently hiring.</span> Check Wizz Air careers portal for live vacancies.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">TUI Airways</div><div class="td-iata">BY · TOM</div></td>
-        <td><span class="type-badge t-charter">Charter</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not hiring fATPL 250h low hours</span> at this time.</td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">TUI Airways</div><div class="td-iata">BY · TOM</div></td>
+          <td class="col-type"><span class="type-badge t-charter">Charter</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not hiring fATPL 250h low hours</span> at this time.</td>
+        </tr>
 
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 
   <!-- CARGO -->
-  <div class="sec-head"><h2>Cargo Operators</h2></div>
-  <table>
-    <thead><tr><th>Airline</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
-    <tbody>
+  <div class="table-section" id="section-cargo">
+    <div class="sec-head"><h2>Cargo Operators</h2></div>
+    <table>
+      <thead><tr><th>Airline</th><th class="col-type">Type</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
 
-      <tr data-status="pathway">
-        <td><div class="td-name">DHL Air UK</div><div class="td-iata">D0 · DHK</div></td>
-        <td><span class="type-badge t-cargo">Cargo</span></td>
-        <td><span class="status-pill s-pathway">SO via Skyborne</span></td>
-        <td class="td-notes">Hiring <span class="hi">Second Officers through Skyborne</span> pathway scheme.</td>
-      </tr>
+        <tr data-status="pathway">
+          <td><div class="td-name">DHL Air UK</div><div class="td-iata">D0 · DHK</div></td>
+          <td class="col-type"><span class="type-badge t-cargo">Cargo</span></td>
+          <td><span class="status-pill s-pathway">SO via Skyborne</span></td>
+          <td class="td-notes">Hiring <span class="hi">Second Officers through Skyborne</span> pathway scheme.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">West Atlantic UK</div><div class="td-iata">NL · NPT</div></td>
-        <td><span class="type-badge t-cargo">Cargo</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">West Atlantic UK</div><div class="td-iata">NL · NPT</div></td>
+          <td class="col-type"><span class="type-badge t-cargo">Cargo</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">European Cargo</div><div class="td-iata">SE · URO</div></td>
-        <td><span class="type-badge t-cargo">Cargo</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">European Cargo</div><div class="td-iata">SE · URO</div></td>
+          <td class="col-type"><span class="type-badge t-cargo">Cargo</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">One Air</div><div class="td-iata">HC · HGO</div></td>
-        <td><span class="type-badge t-cargo">Cargo</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not hiring low hour fATPL holders.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">One Air</div><div class="td-iata">HC · HGO</div></td>
+          <td class="col-type"><span class="type-badge t-cargo">Cargo</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not hiring low hour fATPL holders.</span></td>
+        </tr>
 
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 
   <!-- REGIONAL & ISLAND -->
-  <div class="sec-head"><h2>Regional &amp; Island Operators</h2></div>
-  <table>
-    <thead><tr><th>Airline</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
-    <tbody>
+  <div class="table-section" id="section-regional">
+    <div class="sec-head"><h2>Regional &amp; Island Operators</h2></div>
+    <table>
+      <thead><tr><th>Airline</th><th class="col-type">Type</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
 
-      <tr data-status="watch">
-        <td><div class="td-name">Emerald Airlines</div><div class="td-iata">EG · EUK</div></td>
-        <td><span class="type-badge t-regional">Regional</span></td>
-        <td><span class="status-pill s-watch">CV Sent</span></td>
-        <td class="td-notes">Not hiring fATPL holders right now — <span class="bl">email sent.</span> Word is they're <span class="hi">desperate for FOs</span>, so worth watching closely.</td>
-      </tr>
+        <tr data-status="watch">
+          <td><div class="td-name">Emerald Airlines</div><div class="td-iata">EG · EUK</div></td>
+          <td class="col-type"><span class="type-badge t-regional">Regional</span></td>
+          <td><span class="status-pill s-watch">CV Sent</span></td>
+          <td class="td-notes">Not hiring fATPL holders right now — <span class="bl">email sent.</span> Word is they're <span class="hi">desperate for FOs</span>, so worth watching closely.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">Aurigny</div><div class="td-iata">GR · AUR</div></td>
-        <td><span class="type-badge t-regional">Regional</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes">Not hiring direct — note: <span class="bl">Aurigny LE Pathway feeds Norse Atlantic UK</span>.</td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">Aurigny</div><div class="td-iata">GR · AUR</div></td>
+          <td class="col-type"><span class="type-badge t-regional">Regional</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes">Not hiring direct — note: <span class="bl">Aurigny LE Pathway feeds Norse Atlantic UK</span>.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">Isles of Scilly Skybus</div><div class="td-iata">IOS · SCILLONIA</div></td>
-        <td><span class="type-badge t-regional">Regional</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">Isles of Scilly Skybus</div><div class="td-iata">IOS · SCILLONIA</div></td>
+          <td class="col-type"><span class="type-badge t-regional">Regional</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">Hebridean Air Services</div><div class="td-iata">HBR · HEBRIDEAN</div></td>
-        <td><span class="type-badge t-regional">Regional</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">Hebridean Air Services</div><div class="td-iata">HBR · HEBRIDEAN</div></td>
+          <td class="col-type"><span class="type-badge t-regional">Regional</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-      <tr data-status="open">
-        <td><div class="td-name">Ravenair</div><div class="td-iata">RVR · RAVEN</div></td>
-        <td><span class="type-badge t-regional">Regional</span></td>
-        <td><span class="status-pill s-open">P2 Role Open</span></td>
-        <td class="td-notes"><span class="gr">Hiring for a P2 role.</span> Good low-hours opportunity — apply directly.</td>
-      </tr>
+        <tr data-status="open">
+          <td><div class="td-name">Ravenair</div><div class="td-iata">RVR · RAVEN</div></td>
+          <td class="col-type"><span class="type-badge t-regional">Regional</span></td>
+          <td><span class="status-pill s-open">P2 Role Open</span></td>
+          <td class="td-notes"><span class="gr">Hiring for a P2 role.</span> Good low-hours opportunity — apply directly.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">LyddAir</div><div class="td-iata">LYD · LYDDAIR</div></td>
-        <td><span class="type-badge t-regional">Regional</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">LyddAir</div><div class="td-iata">LYD · LYDDAIR</div></td>
+          <td class="col-type"><span class="type-badge t-regional">Regional</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">Woodgate Aviation</div><div class="td-iata">CWY · CAUSEWAY</div></td>
-        <td><span class="type-badge t-regional">Regional</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">Woodgate Aviation</div><div class="td-iata">CWY · CAUSEWAY</div></td>
+          <td class="col-type"><span class="type-badge t-regional">Regional</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-      <tr data-status="watch">
-        <td><div class="td-name">Silver Aviation</div><div class="td-iata">—</div></td>
-        <td><span class="type-badge t-regional">Regional</span></td>
-        <td><span class="status-pill s-watch">Hiring Soon</span></td>
-        <td class="td-notes">Not now but <span class="bl">will be hiring soon on PC12.</span> Get your CV ready.</td>
-      </tr>
+        <tr data-status="watch">
+          <td><div class="td-name">Silver Aviation</div><div class="td-iata">—</div></td>
+          <td class="col-type"><span class="type-badge t-regional">Regional</span></td>
+          <td><span class="status-pill s-watch">Hiring Soon</span></td>
+          <td class="td-notes">Not now but <span class="bl">will be hiring soon on PC12.</span> Get your CV ready.</td>
+        </tr>
 
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 
   <!-- BIZ / CHARTER / SPECIALIST -->
-  <div class="sec-head"><h2>Business Aviation, Charter &amp; Specialist</h2></div>
-  <table>
-    <thead><tr><th>Airline</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
-    <tbody>
+  <div class="table-section" id="section-biz">
+    <div class="sec-head"><h2>Business Aviation, Charter &amp; Specialist</h2></div>
+    <table>
+      <thead><tr><th>Airline</th><th class="col-type">Type</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
 
-      <tr data-status="open">
-        <td><div class="td-name">2Excel Aviation</div><div class="td-iata">BRO · BROADSWORD</div></td>
-        <td><span class="type-badge t-charter">Charter</span></td>
-        <td><span class="status-pill s-open">Hiring — 250h</span></td>
-        <td class="td-notes"><span class="gr">Hiring at 250 hours.</span> Great low-hours entry point.</td>
-      </tr>
+        <tr data-status="open">
+          <td><div class="td-name">2Excel Aviation</div><div class="td-iata">BRO · BROADSWORD</div></td>
+          <td class="col-type"><span class="type-badge t-charter">Charter</span></td>
+          <td><span class="status-pill s-open">Hiring — 250h</span></td>
+          <td class="td-notes"><span class="gr">Hiring at 250 hours.</span> Great low-hours entry point.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">AirTanker</div><div class="td-iata">9L · TOW</div></td>
-        <td><span class="type-badge t-spec">Charter / MIL</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">NTR fATPL required.</span> No type rating = no entry currently.</td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">AirTanker</div><div class="td-iata">9L · TOW</div></td>
+          <td class="col-type"><span class="type-badge t-spec">Charter / MIL</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">NTR fATPL required.</span> No type rating = no entry currently.</td>
+        </tr>
 
-      <tr data-status="watch">
-        <td><div class="td-name">BAE Systems</div><div class="td-iata">BAE · FELIX</div></td>
-        <td><span class="type-badge t-spec">Specialist</span></td>
-        <td><span class="status-pill s-watch">Monitor</span></td>
-        <td class="td-notes">Were hiring <span class="bl">via LinkedIn.</span> Keep profile updated and monitor regularly.</td>
-      </tr>
+        <tr data-status="watch">
+          <td><div class="td-name">BAE Systems</div><div class="td-iata">BAE · FELIX</div></td>
+          <td class="col-type"><span class="type-badge t-spec">Specialist</span></td>
+          <td><span class="status-pill s-watch">Monitor</span></td>
+          <td class="td-notes">Were hiring <span class="bl">via LinkedIn.</span> Keep profile updated and monitor regularly.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">SaxonAir</div><div class="td-iata">SXN · SAXONAIR</div></td>
-        <td><span class="type-badge t-biz">Business</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">SaxonAir</div><div class="td-iata">SXN · SAXONAIR</div></td>
+          <td class="col-type"><span class="type-badge t-biz">Business</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">RVL Aviation</div><div class="td-iata">7M · REV</div></td>
-        <td><span class="type-badge t-charter">Charter</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">RVL Aviation</div><div class="td-iata">7M · REV</div></td>
+          <td class="col-type"><span class="type-badge t-charter">Charter</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">TAG Aviation UK</div><div class="td-iata">VIP · SOVEREIGN</div></td>
-        <td><span class="type-badge t-biz">Business</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">TAG Aviation UK</div><div class="td-iata">VIP · SOVEREIGN</div></td>
+          <td class="col-type"><span class="type-badge t-biz">Business</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-      <tr data-status="open">
-        <td><div class="td-name">Dragonfly Aviation</div><div class="td-iata">CBM · CAMBRIAN</div></td>
-        <td><span class="type-badge t-charter">Charter</span></td>
-        <td><span class="status-pill s-open">Hiring</span></td>
-        <td class="td-notes"><span class="gr">Currently hiring.</span> Apply directly to Dragonfly.</td>
-      </tr>
+        <tr data-status="open">
+          <td><div class="td-name">Dragonfly Aviation</div><div class="td-iata">CBM · CAMBRIAN</div></td>
+          <td class="col-type"><span class="type-badge t-charter">Charter</span></td>
+          <td><span class="status-pill s-open">Hiring</span></td>
+          <td class="td-notes"><span class="gr">Currently hiring.</span> Apply directly to Dragonfly.</td>
+        </tr>
 
-      <tr data-status="watch">
-        <td><div class="td-name">Flight Calibration Services</div><div class="td-iata">VOR · FLIGHTCAL</div></td>
-        <td><span class="type-badge t-spec">Specialist</span></td>
-        <td><span class="status-pill s-watch">CV on File</span></td>
-        <td class="td-notes">Not hiring now but <span class="bl">will keep CV on file.</span> Send yours in.</td>
-      </tr>
+        <tr data-status="watch">
+          <td><div class="td-name">Flight Calibration Services</div><div class="td-iata">VOR · FLIGHTCAL</div></td>
+          <td class="col-type"><span class="type-badge t-spec">Specialist</span></td>
+          <td><span class="status-pill s-watch">CV on File</span></td>
+          <td class="td-notes">Not hiring now but <span class="bl">will keep CV on file.</span> Send yours in.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">Flexjet UK</div><div class="td-iata">FLJ · FLEX AIR</div></td>
-        <td><span class="type-badge t-biz">Business</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not hiring low hour fATPL holders.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">Flexjet UK</div><div class="td-iata">FLJ · FLEX AIR</div></td>
+          <td class="col-type"><span class="type-badge t-biz">Business</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not hiring low hour fATPL holders.</span></td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">Gama Aviation</div><div class="td-iata">GMA · GAMA</div></td>
-        <td><span class="type-badge t-biz">Business</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">Gama Aviation</div><div class="td-iata">GMA · GAMA</div></td>
+          <td class="col-type"><span class="type-badge t-biz">Business</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-      <tr data-status="watch">
-        <td><div class="td-name">Titan Airways</div><div class="td-iata">ZT · AWC</div></td>
-        <td><span class="type-badge t-charter">Charter</span></td>
-        <td><span class="status-pill s-watch">CV Sent</span></td>
-        <td class="td-notes">Not hiring currently — <span class="bl">email sent,</span> awaiting response. Worth following up.</td>
-      </tr>
+        <tr data-status="watch">
+          <td><div class="td-name">Titan Airways</div><div class="td-iata">ZT · AWC</div></td>
+          <td class="col-type"><span class="type-badge t-charter">Charter</span></td>
+          <td><span class="status-pill s-watch">CV Sent</span></td>
+          <td class="td-notes">Not hiring currently — <span class="bl">email sent,</span> awaiting response. Worth following up.</td>
+        </tr>
 
-      <tr data-status="closed">
-        <td><div class="td-name">London Executive Aviation</div><div class="td-iata">LNX · LONEX</div></td>
-        <td><span class="type-badge t-biz">Business</span></td>
-        <td><span class="status-pill s-closed">Not Hiring</span></td>
-        <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
-      </tr>
+        <tr data-status="closed">
+          <td><div class="td-name">London Executive Aviation</div><div class="td-iata">LNX · LONEX</div></td>
+          <td class="col-type"><span class="type-badge t-biz">Business</span></td>
+          <td><span class="status-pill s-closed">Not Hiring</span></td>
+          <td class="td-notes"><span class="rd">Not currently hiring.</span></td>
+        </tr>
 
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="no-results" id="no-results">No airlines match your search.</div>
 
 </main>
 
 <!-- SUBMIT SECTION -->
-<div class="submit-section">
+<div class="submit-section" id="submit">
   <div class="submit-inner">
     <div class="submit-header">
       <div class="submit-title-row">
@@ -898,13 +1051,13 @@
 </footer>
 
 <script>
-  // Compute stats
+  // Stats
   const allRows = document.querySelectorAll('tbody tr[data-status]');
   let open=0, watch=0, closed=0;
   allRows.forEach(r => {
     const s = r.dataset.status;
-    if (s === 'open' || s === 'pathway') open++;
-    else if (s === 'watch') watch++;
+    if (s==='open'||s==='pathway') open++;
+    else if (s==='watch') watch++;
     else closed++;
   });
   document.getElementById('cnt-open').textContent   = open;
@@ -912,28 +1065,81 @@
   document.getElementById('cnt-closed').textContent = closed;
   document.getElementById('cnt-total').textContent  = allRows.length;
 
-  // Filter
-  const btns = document.querySelectorAll('.f-btn');
-  const classMap = { all:'fa', open:'fo', pathway:'fp', watch:'fw', closed:'fc' };
+  // Filter + Search state
+  let currentFilter = 'all';
+  let currentSearch = '';
 
+  const classMap = { all:'fa', open:'fo', pathway:'fp', watch:'fw', closed:'fc' };
+  const btns = document.querySelectorAll('.f-btn');
+  const searchInput = document.getElementById('search-input');
+  const searchClear = document.getElementById('search-clear');
+  const searchCount = document.getElementById('search-count');
+  const noResults = document.getElementById('no-results');
+
+  function applyFilters() {
+    const q = currentSearch.toLowerCase().trim();
+    let visible = 0;
+
+    allRows.forEach(row => {
+      const s = row.dataset.status;
+      const text = row.textContent.toLowerCase();
+
+      let filterMatch = false;
+      if      (currentFilter==='all')     filterMatch = true;
+      else if (currentFilter==='open')    filterMatch = s==='open';
+      else if (currentFilter==='pathway') filterMatch = s==='pathway';
+      else if (currentFilter==='watch')   filterMatch = s==='watch';
+      else if (currentFilter==='closed')  filterMatch = s==='closed';
+
+      const searchMatch = q==='' || text.includes(q);
+
+      const show = filterMatch && searchMatch;
+      row.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+
+    // Show/hide section headers based on whether they have visible rows
+    document.querySelectorAll('.table-section').forEach(section => {
+      const hasVisible = section.querySelectorAll('tbody tr:not(.hidden)').length > 0;
+      section.classList.toggle('section-hidden', !hasVisible);
+    });
+
+    // Count display
+    if (q !== '') {
+      searchCount.innerHTML = `<span>${visible}</span> result${visible!==1?'s':''} for "${q}"`;
+      searchClear.style.display = 'block';
+    } else {
+      searchCount.innerHTML = '';
+      searchClear.style.display = 'none';
+    }
+
+    noResults.classList.toggle('show', visible === 0);
+  }
+
+  // Filter buttons
   btns.forEach(btn => {
     btn.addEventListener('click', () => {
       btns.forEach(b => b.className = 'f-btn');
-      const f = btn.dataset.f;
-      btn.classList.add(classMap[f]);
-      allRows.forEach(row => {
-        const s = row.dataset.status;
-        let show = false;
-        if      (f === 'all')     show = true;
-        else if (f === 'open')    show = s === 'open';
-        else if (f === 'pathway') show = s === 'pathway';
-        else if (f === 'watch')   show = s === 'watch';
-        else if (f === 'closed')  show = s === 'closed';
-        row.classList.toggle('hidden', !show);
-      });
+      currentFilter = btn.dataset.f;
+      btn.classList.add(classMap[currentFilter]);
+      applyFilters();
     });
   });
-  // Form submission via Formspree
+
+  // Search
+  searchInput.addEventListener('input', () => {
+    currentSearch = searchInput.value;
+    applyFilters();
+  });
+
+  searchClear.addEventListener('click', () => {
+    searchInput.value = '';
+    currentSearch = '';
+    applyFilters();
+    searchInput.focus();
+  });
+
+  // Form submission
   const form = document.getElementById('intel-form');
   const submitBtn = document.getElementById('submit-btn');
   const successMsg = document.getElementById('form-success');
